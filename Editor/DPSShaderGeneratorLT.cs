@@ -201,6 +201,7 @@ namespace DPSGen
             string path_shader_prop = null;
             string path_shader_insert = null;
             List<string> copy_files = new List<string>();
+			List<string> copy_files_asmdef = new List<string>();
             log += "LilTemplateDirectory: " + template_path + "\n";
             string[] files = Directory.GetFiles(template_path + "/Shaders");
             foreach (string fpath in files)
@@ -273,7 +274,22 @@ namespace DPSGen
                     EditorUtility.DisplayProgressBar($"Found Liltoon Custom Inspector: ", sp, (float)curstep++ / totalstep);
                 }
             }
-
+			
+            string[] dir3 = Directory.GetCurrentDirectory();
+            string[] files3 = Directory.GetFiles(dir3 + "/lilToon");
+            string path_custom_inspector = null;
+            foreach (string fpath in files3)
+            {
+                string sp = fpath.Replace('\\', '/');
+                if (sp.EndsWith("/CustomInspector.cs"))
+                {
+                    path_custom_inspector = sp;
+                    log += "CustomInspector: " + sp + "\n";
+                    EditorUtility.DisplayProgressBar($"Found Liltoon Custom Inspector: ", sp, (float)curstep++ / totalstep);
+                }
+				log += "asmdef: " + sp + "\n";
+            }
+			
             string dpsCGincDirPath = Path.GetDirectoryName(Path.GetDirectoryName(pathXSOrifice)).Replace('\\', '/') + "/CGInc";
             string path_xs_OD = null;
             string path_xs_PD = null;
@@ -705,6 +721,13 @@ namespace DPSGen
                 File.Copy(sp, lilPenetratorPath + "/Shaders/" + fname, true);
                 EditorUtility.DisplayProgressBar($"Copied ShaderContainers: ", fname, (float)curstep++ / totalstep);
             }
+/*			foreach (string sp in copy_files_asmdef)
+            {
+                string fname = Path.GetFileName(sp);
+				File.Copy(sp, lilOrificePath + "/Editor/" + fname, true);
+				File.Copy(sp, lilPenetratorPath + "/Editor/" + fname, true);
+                EditorUtility.DisplayProgressBar($"Copied asmdef: ", fname, (float)curstep++ / totalstep);
+            }*/
             AssetDatabase.StopAssetEditing();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
